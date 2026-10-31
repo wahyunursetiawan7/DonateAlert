@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notifikasi Donasi Tako</title>
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;700&display=swap');
+
+        :root {
+            --amount: rgb(78, 220, 255);
+            --donator: rgb(78, 220, 255);
+            --text: #ffffff;
+
+            --frame-width: 550px;
+            --mascot-width: 250px;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html,
+        body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            background: transparent;
+            overflow: hidden;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .alert-wrapper {
+            position: relative;
+            width: 100%;
+            min-height: 230px;
+            padding: 70px 12px 25px;
+            overflow: visible;
+        }
+
+        .container {
+            display: grid;
+            grid-template-columns: 110px minmax(0, 1fr);
+            gap: 10px;
+
+            position: relative;
+            isolation: isolate;
+
+            width: 100%;
+            max-width: var(--frame-width);
+            min-height: 100px;
+
+            margin: 0 auto;
+            padding: 10px 20px;
+
+            border-radius: 15px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.8);
+        }
+
+        .container::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: inherit;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        .background-img {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: inherit;
+            z-index: -2;
+        }
+
+        .left {
+            position: relative;
+            z-index: 3;
+        }
+
+        .right {
+            position: relative;
+            z-index: 2;
+            min-width: 0;
+
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .mascot {
+            position: absolute;
+            bottom: -35px;
+            left: -35px;
+            width: var(--mascot-width);
+            z-index: 3;
+            pointer-events: none;
+        }
+
+        .mascot-float {
+            width: 100%;
+            transform-style: preserve-3d;
+            transform-origin: center bottom;
+            animation: mascot-floating 3.5s ease-in-out infinite;
+            will-change: transform;
+        }
+
+        .mascot-shiny {
+            position: relative;
+            display: inline-block;
+            width: 70%;
+            line-height: 0;
+            animation: mascot-glow 3s ease-in-out infinite;
+        }
+
+        .mascot-shiny img {
+            display: block;
+            width: 100%;
+            height: auto;
+            object-fit: contain;
+            filter: drop-shadow(3px 3px 6px rgba(0, 0, 0, 0.8));
+        }
+
+        .mascot-shiny::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+
+            background: linear-gradient(
+                110deg,
+                transparent 20%,
+                rgba(255, 255, 255, 0.05) 35%,
+                rgba(255, 255, 255, 0.75) 50%,
+                rgba(255, 255, 255, 0.05) 65%,
+                transparent 80%
+            );
+
+            background-size: 250% 100%;
+            background-position: 150% 0;
+
+            -webkit-mask-image: var(--mascot-mask);
+            mask-image: var(--mascot-mask);
+            -webkit-mask-size: contain;
+            mask-size: contain;
+            -webkit-mask-repeat: no-repeat;
+            mask-repeat: no-repeat;
+            -webkit-mask-position: center;
+            mask-position: center;
+
+            animation: shiny-sweep 3s ease-in-out infinite;
+        }
+
+        .text {
+            position: relative;
+            width: 100%;
+            max-width: 400px;
+
+            text-align: center;
+            font-size: 1.1rem;
+            font-weight: 500;
+            letter-spacing: 0.5px;
+            line-height: 1.3;
+
+            overflow-wrap: break-word;
+            color: var(--text);
+
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+
+        .text p {
+            margin: 8px 0;
+        }
+
+        .amount {
+            color: var(--amount);
+            animation: amount-glow 2.4s ease-in-out infinite;
+        }
+
+        .donator {
+            color: var(--donator);
+        }
+
+        .message {
+            color: var(--text);
+        }
+
+        @keyframes mascot-floating {
+            0%, 100% {
+                transform: perspective(600px)
+                           rotateY(-12deg)
+                           rotateZ(-2deg);
+            }
+
+            25% {
+                transform: perspective(600px)
+                           rotateY(0deg)
+                           rotateZ(0deg);
+            }
+
+            50% {
+                transform: perspective(600px)
+                           rotateY(12deg)
+                           rotateZ(2deg);
+            }
+
+            75% {
+                transform: perspective(600px)
+                           rotateY(0deg)
+                           rotateZ(0deg);
+            }
+        }
+
+        @keyframes mascot-glow {
+            0%, 100% {
+                filter: brightness(1);
+            }
+
+            50% {
+                filter: brightness(1.18);
+            }
+        }
+
+        @keyframes shiny-sweep {
+            0%, 15% {
+                background-position: 150% 0;
+                opacity: 0;
+            }
+
+            25% {
+                opacity: 0.8;
+            }
+
+            55% {
+                background-position: -150% 0;
+                opacity: 0.8;
+            }
+
+            65%, 100% {
+                background-position: -150% 0;
+                opacity: 0;
+            }
+        }
+
+        @keyframes amount-glow {
+            0%, 100% {
+                text-shadow: 0 0 4px rgba(78, 220, 255, 0.25);
+            }
+
+            50% {
+                text-shadow: 0 0 15px rgba(78, 220, 255, 0.9);
+            }
+        }
+
+        @media (max-width: 500px) {
+            .container {
+                grid-template-columns: 80px minmax(0, 1fr);
+                padding: 10px 12px;
+            }
+
+            .text {
+                font-size: 0.95rem;
+            }
+
+            .mascot {
+                width: min(var(--mascot-width), 45vw);
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="alert-wrapper">
+        <div class="container">
+
+            <img
+                alt="Background Image"
+                class="background-img"
+                src="https://cdn.discordapp.com/attachments/1272508912675061760/1565142023348953188/New_Project_26_A63F2F5.png?ex=6ae52519&is=6ae3d399&hm=5e7b7a2fffa78455fc906daf3a808d8bd2606b9e7643f42ddc88e5d279e15788&"
+            >
+
+            <div class="left">
+                <div class="mascot">
+                    <div class="mascot-float">
+                        <div class="mascot-shiny" id="mascot-shiny">
+                            <img
+                                id="mascot-image"
+                                alt="Mascot"
+                                src="https://cdn.discordapp.com/attachments/712068361919529052/1565629014993928283/6558165c-a074-4fe0-a838-309d3459ebef.png?ex=6ae59925&is=6ae447a5&hm=507ac97214368cad6fdf48025c16ce5aed1e1c54446ef0013446c19d6774a7b0&"
+                            >
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="right">
+                <div class="text">
+                    <p>
+                        <span class="amount">{{formattedAmount}}</span>
+                        Dari
+                        <span class="donator">{{gifterName}}</span>
+                    </p>
+
+                    <p id="donation-message">
+                        <span class="message">{{message}}</span>
+                    </p>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        const messageElement = document.getElementById("donation-message");
+        const messageText = messageElement.textContent.trim();
+
+        if (!messageText || messageText.includes("{{")) {
+            messageElement.style.display = "none";
+        }
+
+        const mascotImage = document.getElementById("mascot-image");
+        const mascotShiny = document.getElementById("mascot-shiny");
+
+        mascotShiny.style.setProperty(
+            "--mascot-mask",
+            'url("' + mascotImage.src + '")'
+        );
+    </script>
+
+</body>
+</html>

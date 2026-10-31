@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notifikasi Donasi Tako</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <div class="alert-wrapper">
+        <div class="container">
+
+            <img
+                alt="Background Image"
+                class="background-img"
+                src="https://cdn.discordapp.com/attachments/1272508912675061760/1565142023348953188/New_Project_26_A63F2F5.png?ex=6ae52519&is=6ae3d399&hm=5e7b7a2fffa78455fc906daf3a808d8bd2606b9e7643f42ddc88e5d279e15788&"
+            >
+
+            <div class="left">
+                <div class="mascot">
+                    <div class="mascot-float">
+                        <div class="mascot-shiny" id="mascot-shiny">
+                            <img
+                                id="mascot-image"
+                                alt="Mascot"
+                                src="https://cdn.discordapp.com/attachments/712068361919529052/1565629014993928283/6558165c-a074-4fe0-a838-309d3459ebef.png?ex=6ae59925&is=6ae447a5&hm=507ac97214368cad6fdf48025c16ce5aed1e1c54446ef0013446c19d6774a7b0&"
+                            >
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="right">
+                <div class="text">
+                    <p>
+                        <span class="amount">{{formattedAmount}}</span>
+                        Dari
+                        <span class="donator">{{gifterName}}</span>
+                    </p>
+
+                    <p id="donation-message">
+                        <span class="message">{{message}}</span>
+                    </p>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        const messageElement = document.getElementById("donation-message");
+        const messageText = messageElement.textContent.trim();
+
+        if (!messageText || messageText.includes("{{")) {
+            messageElement.style.display = "none";
+        }
+
+        const mascotImage = document.getElementById("mascot-image");
+        const mascotShiny = document.getElementById("mascot-shiny");
+
+        mascotShiny.style.setProperty(
+            "--mascot-mask",
+            'url("' + mascotImage.src + '")'
+        );
+    </script>
+
+</body>
+</html>

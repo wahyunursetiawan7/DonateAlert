@@ -1,0 +1,745 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Akatsuki Donation Milestone</title>
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap');
+
+        :root {
+            --primary: #ff253a;
+            --primary-light: #ff6874;
+            --primary-dark: #8b0015;
+            --text: #ffffff;
+
+            --frame-width: 650px;
+            --frame-height: 230px;
+            --progress-height: 22px;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html,
+        body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            background: transparent;
+            overflow: hidden;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            color: var(--text);
+        }
+
+        .milestone-wrapper {
+            width: 100%;
+            padding: 25px 18px;
+            perspective: 1000px;
+        }
+
+        .milestone {
+            position: relative;
+            isolation: isolate;
+
+            width: 100%;
+            max-width: var(--frame-width);
+            height: var(--frame-height);
+
+            margin: 0 auto;
+
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+            transform-style: preserve-3d;
+
+            animation: frame-floating 6s ease-in-out infinite;
+        }
+
+        .background-layer {
+            position: absolute;
+            inset: 0;
+            z-index: -2;
+
+            transform: translateZ(-12px) scale(1.03);
+
+            filter:
+                drop-shadow(0 8px 5px rgba(0, 0, 0, 0.85))
+                drop-shadow(0 12px 15px rgba(0, 0, 0, 0.65))
+                drop-shadow(0 0 12px rgba(255, 0, 35, 0.3));
+
+            animation: background-breathing 5s ease-in-out infinite;
+        }
+
+        .background-img {
+            display: block;
+            width: 100%;
+            height: 100%;
+            object-fit: fill;
+        }
+
+        .background-glow {
+            position: absolute;
+            inset: 18% 12%;
+
+            z-index: -1;
+            pointer-events: none;
+
+            border-radius: 50%;
+
+            background: radial-gradient(
+                ellipse,
+                rgba(255, 0, 40, 0.13),
+                rgba(120, 0, 20, 0.05) 50%,
+                transparent 75%
+            );
+
+            animation: background-glow 4s ease-in-out infinite;
+        }
+
+        .particles-container {
+            position: absolute;
+            inset: 12% 8%;
+
+            z-index: 1;
+            overflow: hidden;
+            pointer-events: none;
+        }
+
+        .particle {
+            position: absolute;
+
+            bottom: -10px;
+            left: var(--left);
+
+            width: var(--size);
+            height: var(--size);
+
+            border-radius: 50%;
+
+            background: var(--color);
+
+            box-shadow:
+                0 0 5px var(--color),
+                0 0 12px var(--color),
+                0 0 20px rgba(255, 0, 0, 0.4);
+
+            opacity: 0;
+
+            animation: particle-floating var(--duration) linear infinite;
+            animation-delay: var(--delay);
+
+            will-change: transform, opacity;
+        }
+
+        .milestone-content {
+            position: relative;
+            z-index: 3;
+
+            width: 74%;
+
+            margin-top: -4px;
+
+            text-align: center;
+
+            transform: translateZ(25px);
+        }
+
+        .milestone-title {
+            margin: 0 0 13px;
+
+            font-size: 20px;
+            font-weight: 900;
+            line-height: 1.3;
+            letter-spacing: 0.7px;
+
+            color: #ffffff;
+
+            overflow-wrap: anywhere;
+
+            -webkit-text-stroke: 0.4px rgba(80, 0, 0, 0.7);
+
+            text-shadow:
+                0 1px 0 #d6d6d6,
+                0 2px 0 #aaaaaa,
+                0 3px 0 #6e6e6e,
+                0 4px 0 #350008,
+                0 5px 0 #170005,
+                0 7px 5px rgba(0, 0, 0, 0.9),
+                0 0 12px rgba(255, 0, 35, 0.55);
+
+            animation: title-glow 3s ease-in-out infinite;
+        }
+
+        .progress-container {
+            position: relative;
+
+            width: 100%;
+            height: var(--progress-height);
+
+            padding: 3px;
+
+            overflow: hidden;
+
+            border-radius: 30px;
+
+            background: linear-gradient(
+                180deg,
+                #666666 0%,
+                #171717 25%,
+                #050505 65%,
+                #777777 100%
+            );
+
+            border: 1px solid #111111;
+
+            box-shadow:
+                0 2px 0 #070707,
+                0 4px 0 #000000,
+                0 7px 8px rgba(0, 0, 0, 0.9),
+                0 0 12px rgba(255, 0, 30, 0.3),
+                inset 0 1px 2px rgba(255, 255, 255, 0.35);
+        }
+
+        .progress-track {
+            position: relative;
+
+            width: 100%;
+            height: 100%;
+
+            overflow: hidden;
+
+            border-radius: inherit;
+
+            background: linear-gradient(
+                180deg,
+                #020202,
+                #1a0508 45%,
+                #320008 100%
+            );
+
+            box-shadow:
+                inset 0 2px 5px rgba(0, 0, 0, 0.95),
+                inset 0 0 8px rgba(255, 0, 35, 0.15);
+        }
+
+        .progress-fill {
+            position: relative;
+
+            width: 0%;
+            height: 100%;
+
+            overflow: hidden;
+
+            border-radius: inherit;
+
+            background: linear-gradient(
+                180deg,
+                #ffb0b5 0%,
+                #ff5265 15%,
+                #ff102e 40%,
+                #c60020 65%,
+                #71000e 100%
+            );
+
+            box-shadow:
+                inset 0 2px 2px rgba(255, 255, 255, 0.6),
+                inset 0 -3px 3px rgba(50, 0, 0, 0.8),
+                0 0 8px rgba(255, 0, 35, 0.9),
+                0 0 16px rgba(255, 0, 35, 0.6);
+
+            transition: width 1.8s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+
+        .progress-fill::before {
+            content: "";
+
+            position: absolute;
+            inset: 0;
+
+            background: repeating-linear-gradient(
+                110deg,
+                transparent 0px,
+                transparent 12px,
+                rgba(255, 255, 255, 0.15) 13px,
+                rgba(255, 255, 255, 0.15) 17px,
+                transparent 18px,
+                transparent 30px
+            );
+
+            background-size: 60px 100%;
+
+            animation: progress-stripes 2s linear infinite;
+        }
+
+        .progress-fill::after {
+            content: "";
+
+            position: absolute;
+
+            top: 0;
+            left: -100%;
+
+            width: 55%;
+            height: 100%;
+
+            background: linear-gradient(
+                90deg,
+                transparent,
+                rgba(255, 255, 255, 0.8),
+                transparent
+            );
+
+            transform: skewX(-25deg);
+
+            animation: progress-shimmer 3s ease-in-out infinite;
+        }
+
+        .progress-highlight {
+            position: absolute;
+
+            top: 2px;
+            left: 5px;
+            right: 5px;
+
+            height: 3px;
+
+            border-radius: 10px;
+
+            background: rgba(255, 255, 255, 0.22);
+
+            pointer-events: none;
+        }
+
+        .amounts {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            align-items: start;
+
+            gap: 16px;
+
+            margin: 0 0 14px;
+
+            font-size: 14px;
+            font-weight: 800;
+            line-height: 1.4;
+        }
+
+        .amount-item {
+            min-width: 0;
+            text-align: left;
+        }
+
+        .amount-item:last-child {
+            text-align: right;
+        }
+
+        .current,
+        .target {
+            display: block;
+            font-variant-numeric: tabular-nums;
+            overflow-wrap: anywhere;
+            color: #ffffff;
+
+            text-shadow:
+                0 1px 0 #aaaaaa,
+                0 2px 0 #555555,
+                0 3px 0 #210006,
+                0 4px 4px rgba(0, 0, 0, 0.9),
+                0 0 8px rgba(255, 0, 35, 0.35);
+        }
+
+        .milestone-footer {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+            gap: 10px;
+
+            margin-top: 9px;
+
+            font-size: 11px;
+            font-weight: 700;
+        }
+
+        .step {
+            color: #ffffff;
+
+            text-shadow:
+                0 2px 2px #000000,
+                0 3px 4px #000000;
+        }
+
+        .percentage {
+            display: inline-block;
+            padding: 4px 14px;
+            border: 1px solid #ff7d89;
+            border-radius: 999px;
+            background: linear-gradient(180deg, #a32638 0%, #5b0918 48%, #29030b 100%);
+            color: #fff0f2;
+
+            font-size: 16px;
+            font-weight: 900;
+            font-variant-numeric: tabular-nums;
+            line-height: 1.4;
+            white-space: nowrap;
+
+            transform: perspective(500px) rotateX(10deg);
+            box-shadow:
+                inset 0 1px 1px rgba(255, 255, 255, 0.6),
+                inset 0 -2px 3px rgba(0, 0, 0, 0.5),
+                0 1px 0 #8f1729,
+                0 2px 0 #701020,
+                0 3px 0 #510a17,
+                0 4px 0 #32050e,
+                0 7px 6px rgba(0, 0, 0, 0.8),
+                0 0 12px rgba(255, 0, 35, 0.3);
+
+            text-shadow:
+                0 1px 0 #e88795,
+                0 2px 0 #b64053,
+                0 3px 0 #741829,
+                0 4px 0 #3c0712,
+                0 5px 3px rgba(0, 0, 0, 0.9);
+        }
+
+        @keyframes frame-floating {
+            0%, 100% {
+                transform:
+                    translateY(0)
+                    rotateX(0deg)
+                    rotateY(-1.5deg);
+            }
+
+            50% {
+                transform:
+                    translateY(-4px)
+                    rotateX(1deg)
+                    rotateY(1.5deg);
+            }
+        }
+
+        @keyframes background-breathing {
+            0%, 100% {
+                filter:
+                    brightness(1)
+                    drop-shadow(0 8px 8px rgba(0, 0, 0, 0.8))
+                    drop-shadow(0 0 8px rgba(255, 0, 35, 0.2));
+            }
+
+            50% {
+                filter:
+                    brightness(1.12)
+                    drop-shadow(0 12px 12px rgba(0, 0, 0, 0.9))
+                    drop-shadow(0 0 18px rgba(255, 0, 35, 0.5));
+            }
+        }
+
+        @keyframes background-glow {
+            0%, 100% {
+                opacity: 0.4;
+                transform: scale(0.95);
+            }
+
+            50% {
+                opacity: 1;
+                transform: scale(1.08);
+            }
+        }
+
+        @keyframes title-glow {
+            0%, 100% {
+                filter: brightness(1);
+            }
+
+            50% {
+                filter: brightness(1.15);
+            }
+        }
+
+        @keyframes particle-floating {
+            0% {
+                transform: translate3d(0, 0, 0) scale(0.4);
+                opacity: 0;
+            }
+
+            20% {
+                opacity: var(--opacity);
+            }
+
+            50% {
+                transform: translate3d(10px, -65px, 0) scale(1);
+                opacity: var(--opacity);
+            }
+
+            80% {
+                opacity: var(--opacity);
+            }
+
+            100% {
+                transform:
+                    translate3d(var(--drift), -160px, 0)
+                    scale(0.2);
+
+                opacity: 0;
+            }
+        }
+
+        @keyframes progress-stripes {
+            from {
+                background-position: 0 0;
+            }
+
+            to {
+                background-position: 60px 0;
+            }
+        }
+
+        @keyframes progress-shimmer {
+            0%, 15% {
+                left: -100%;
+                opacity: 0;
+            }
+
+            30% {
+                opacity: 1;
+            }
+
+            65% {
+                left: 150%;
+                opacity: 1;
+            }
+
+            75%, 100% {
+                left: 150%;
+                opacity: 0;
+            }
+        }
+
+        @media (max-width: 500px) {
+            :root {
+                --frame-height: 190px;
+                --progress-height: 17px;
+            }
+
+            .milestone-wrapper {
+                padding: 15px 8px;
+            }
+
+            .milestone-content {
+                width: 76%;
+            }
+
+            .milestone-title {
+                font-size: 14px;
+                margin-bottom: 9px;
+            }
+
+            .amounts {
+                font-size: 10px;
+                gap: 10px;
+                margin-bottom: 8px;
+            }
+
+            .milestone-footer {
+                font-size: 9px;
+                margin-top: 6px;
+            }
+
+            .percentage {
+                padding: 3px 11px;
+                font-size: 12px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="milestone-wrapper">
+
+        <div class="milestone">
+
+            <div class="background-layer">
+                <img
+                    class="background-img"
+                    alt="Akatsuki Background"
+                    src="https://cdn.discordapp.com/attachments/712068361919529052/1565756393510932580/12d6b904-6ee0-4f7f-aa47-2ee838161a62.png?ex=6ae60fc6&amp;is=6ae4be46&amp;hm=dabcf5435f27264e7fb5382f4914a7a02d9d46119a612e6322e43a1e9430b5b7&amp;"
+                >
+            </div>
+
+            <div class="background-glow"></div>
+
+            <div
+                class="particles-container"
+                id="particles-container">
+            </div>
+
+            <div class="milestone-content">
+
+                <div class="milestone-title" id="ms-title">
+                    {{title}}
+                </div>
+
+                <div class="amounts">
+
+                    <div class="amount-item">
+                        <span class="current" id="current">
+                            {{formattedStepProgress}}
+                        </span>
+                    </div>
+
+                    <div class="amount-item">
+                        <span class="target" id="target">
+                            {{formattedStepTarget}}
+                        </span>
+                    </div>
+
+                </div>
+
+                <div class="progress-container">
+
+                    <div class="progress-track">
+
+                        <div
+                            class="progress-fill"
+                            id="bar-fill"
+                            data-progress="{{percentage}}">
+                        </div>
+
+                        <div class="progress-highlight"></div>
+
+                    </div>
+
+                </div>
+
+                <div class="milestone-footer">
+
+                    <span class="percentage" id="percentage-text">
+                        {{percentage}}%
+                    </span>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <script>
+        const particleSettings = {
+            count: 25,
+            minSize: 1,
+            maxSize: 3.5,
+            minDuration: 3,
+            maxDuration: 7,
+            minOpacity: 0.25,
+            maxOpacity: 0.85,
+
+            colors: [
+                "rgba(255, 35, 55, 0.95)",
+                "rgba(255, 90, 100, 0.9)",
+                "rgba(255, 160, 160, 0.85)",
+                "rgba(255, 255, 255, 0.75)"
+            ]
+        };
+
+        const particlesContainer = document.getElementById(
+            "particles-container"
+        );
+
+        function random(min, max) {
+            return Math.random() * (max - min) + min;
+        }
+
+        function createParticles() {
+            particlesContainer.innerHTML = "";
+
+            const fragment = document.createDocumentFragment();
+
+            for (let i = 0; i < particleSettings.count; i++) {
+                const particle = document.createElement("div");
+
+                particle.className = "particle";
+
+                const size = random(
+                    particleSettings.minSize,
+                    particleSettings.maxSize
+                );
+
+                const duration = random(
+                    particleSettings.minDuration,
+                    particleSettings.maxDuration
+                );
+
+                const opacity = random(
+                    particleSettings.minOpacity,
+                    particleSettings.maxOpacity
+                );
+
+                const left = random(2, 98);
+                const drift = random(-30, 30);
+                const delay = random(-duration, 0);
+
+                const color = particleSettings.colors[
+                    Math.floor(
+                        Math.random() * particleSettings.colors.length
+                    )
+                ];
+
+                particle.style.setProperty("--size", size + "px");
+                particle.style.setProperty("--left", left + "%");
+                particle.style.setProperty("--duration", duration + "s");
+                particle.style.setProperty("--delay", delay + "s");
+                particle.style.setProperty("--opacity", opacity);
+                particle.style.setProperty("--drift", drift + "px");
+                particle.style.setProperty("--color", color);
+
+                fragment.appendChild(particle);
+            }
+
+            particlesContainer.appendChild(fragment);
+        }
+
+        function updateProgress(value) {
+            const progressBar = document.getElementById("bar-fill");
+            const percentageText = document.getElementById("percentage-text");
+
+            const progress = Math.max(
+                0,
+                Math.min(100, parseFloat(value) || 0)
+            );
+
+            progressBar.style.width = progress + "%";
+            percentageText.textContent = progress.toFixed(0) + "%";
+        }
+
+        function initializeMilestone() {
+            const progressBar = document.getElementById("bar-fill");
+            const rawProgress = progressBar.dataset.progress;
+
+            if (!rawProgress || rawProgress.includes("{{")) {
+                updateProgress(0);
+                return;
+            }
+
+            requestAnimationFrame(() => {
+                requestAnimationFrame(() => {
+                    updateProgress(rawProgress);
+                });
+            });
+        }
+
+        createParticles();
+        initializeMilestone();
+    </script>
+
+</body>
+</html>
